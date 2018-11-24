@@ -1,39 +1,98 @@
-<!--
-Author : Andri Kurnia Putra <andri.24434@gmail.com>
-since 2018-11-24
--->
-<!DOCTYPE html>
 <html>
 <head>
-	<title>Tac Tic Toe AI</title>
-	<!-- Style -->
-	<link rel="stylesheet" type="text/css" href="assets/style.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="gameSystem.js"></script>
+<script type="text/javascript" src="board.js"></script>
+<script type="text/javascript">
+var gameSystem_game = new gameSystem(),
+	playing = true;
+
+$(document).ready(function() {
+	initBoard();
+});
+
+function ComputerMove(x,y) {
+	var ai_move;
+
+	if(!playing) {
+		$("#result").html("Please wait for your move.");
+		return;
+	}
+
+	playing = false;
+
+	var board_x = Math.floor(x/100);
+	var board_y = Math.floor(y/100);
+
+	if (!gameSystem_game.make_player_move(board_x,board_y)) {
+		$("#result").html("Please make a valid move.");
+		playing = true;
+		return;
+	}
+	displayBoard(gameSystem_game.get_board(),"tttboard");
+
+	if(gameSystem_game.is_terminal()) {
+		showWinner(gameSystem_game.get_score());
+		return;
+	}
+
+	$("#result").html("Thinking..");
+	gameSystem_game.make_ai_move();
+	displayBoard(gameSystem_game.get_board(),"tttboard");
+
+	if(gameSystem_game.is_terminal()) {
+		showWinner(gameSystem_game.get_score());
+		return;
+	}
+
+	playing = true;
+
+	$("#result").html("Your move");
+
+}
+
+function initBoard() {
+	$("#tttboard").click(function(e) {
+		e.stopImmediatePropagation();
+		ComputerMove(e.clientX-$(this).offset().left,e.clientY-$(this).offset().top);
+	});
+	displayBoard(gameSystem_game.get_board(),"tttboard");
+	$("#result").html("Your move");
+}
+
+function showWinner(winner) {
+	switch(winner) {
+		case 1:
+			$("#result").html("Status : Win");
+			break;
+		case -1:
+			$("#result").html("Status : Lost");
+			break;
+		case 0:
+			$("#result").html("Status : Draw");
+			break;
+	}
+}
+
+
+</script>
+<style type="text/css">
+  canvas {display:block;margin:0 auto; margin-top:100px}
+  .feedback { text-align:center; margin-top:25px }
+
+  h1, h2 {
+  	text-align: center;
+  }
+</style>
 </head>
-<body>
-	<div id="container">
-		<header id="reset">Reset</header>
-		<div class="clearfix"></div>
-		<ul id="board">
-			<li id="column1"></li>
-			<li id="column2"></li>
-			<li id="column3"></li>
-			<li id="column4"></li>
-			<li id="column5"></li>
-			<li id="column6"></li>
-			<li id="column7"></li>
-			<li id="column8"></li>
-			<li id="column9"></li>
-		</ul>
+<body onload="initBoard();">
+<h1>Tic Tac Toe</h1>
 
-		<div class="clearfix"></div>
-		<footer id="reset">
-			X : You |
-			O : Computer
-		</footer>
-	</div>
-
-	<!-- Script -->
-	<script type="text/javascript" src="assets/jquery-2.x.min.js"></script>
-	<script type="text/javascript" src="assets/app.js"></script>
+<div id="result" class="feedback">
+</div>
+<canvas id="tttboard" width="300" height="300">
+Your browser doesn't display the canvas tag
+</canvas>
+<h2>X : You | O : Computer</h2>
 </body>
 </html>
