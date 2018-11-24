@@ -6,11 +6,13 @@
 <script type="text/javascript">
 var gameSystem_game = new gameSystem(),
 	playing = true;
+var playerStart = true;
 
 $(document).ready(function() {
 	initBoard();
 });
 
+//Move AI
 function ComputerMove(x,y) {
 	var ai_move;
 
@@ -31,6 +33,7 @@ function ComputerMove(x,y) {
 	}
 	displayBoard(gameSystem_game.get_board(),"tttboard");
 
+	//get From gameSystem.js
 	if(gameSystem_game.is_terminal()) {
 		showWinner(gameSystem_game.get_score());
 		return;
@@ -51,7 +54,14 @@ function ComputerMove(x,y) {
 
 }
 
+// Show Canvas Board
 function initBoard() {
+	playerStart = randomStart();
+	if (!playerStart)
+	{
+		playerStart = true;
+		startMoveAI();
+	}
 	$("#tttboard").click(function(e) {
 		e.stopImmediatePropagation();
 		ComputerMove(e.clientX-$(this).offset().left,e.clientY-$(this).offset().top);
@@ -60,22 +70,38 @@ function initBoard() {
 	$("#result").html("Your move");
 }
 
+// Show Winner
 function showWinner(winner) {
 	switch(winner) {
 		case 1:
-			$("#result").html("Status : Win");
+			alert("You Win !"); 
+			resetGame();
 			break;
 		case -1:
-			$("#result").html("Status : Lost");
+			alert("You Lost !"); 
+			resetGame();
 			break;
 		case 0:
-			$("#result").html("Status : Draw");
+			alert("Draw !!"); 
+			resetGame();
 			break;
 	}
 }
 
 function resetGame() {
     location.reload();
+}
+
+function randomStart()
+{
+	return Math.random() >= 0.5;
+}
+
+function startMoveAI() {
+	playerStart = true;
+	$("#result").html("Thinking..");
+	gameSystem_game.make_ai_first_move();
+	displayBoard(gameSystem_game.get_board(),"tttboard");
 }
 
 </script>

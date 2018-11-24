@@ -1,3 +1,4 @@
+// main function
 function gameSystem() {
 
 	this.board = new Array();
@@ -11,10 +12,12 @@ function gameSystem() {
 
 };
 
+//Get Canvas Board
 gameSystem.prototype.get_board = function() {
 	return this.board;
 };
 
+// Get Player Move
 gameSystem.prototype.make_player_move = function(i,j) {
 	if (!(0 <= i && i <= 2 && 0 <= j && j <= 2) ||
 		this.board[i][j] != '-') {
@@ -25,11 +28,20 @@ gameSystem.prototype.make_player_move = function(i,j) {
 	return true;
 };
 
+//Ai Mover
 gameSystem.prototype.make_ai_move = function() {
 	var best_move = alpha_beta(this);
 	this.board[best_move[0]][best_move[1]] = 'o';
 };
 
+//Ai Mover
+gameSystem.prototype.make_ai_first_move = function() {
+	var x = getRandomInt(0,3);
+	var y = getRandomInt(0,3);
+	this.board[x][y] = 'o';
+};
+
+//get move
 gameSystem.prototype.get_moves = function(player) {
 
 	var moves = new Array();
@@ -46,6 +58,7 @@ gameSystem.prototype.get_moves = function(player) {
 
 };
 
+//check is terminal
 gameSystem.prototype.is_terminal = function() {
 	var no_spaces = true;
 	for (var i = 0; i < 3; i++) {
@@ -59,6 +72,7 @@ gameSystem.prototype.is_terminal = function() {
 	return no_spaces || this.get_score() != 0;
 };
 
+// get score
 gameSystem.prototype.get_score = function() {
 	var lines = new Array(), board = this.board;
 	lines.push(board[0]);
@@ -86,6 +100,7 @@ gameSystem.prototype.get_score = function() {
 	return 0;
 };
 
+// get next turn
 gameSystem.prototype.get_next = function(move,player) {
 	if (player == "max") {
 		player = 'x';
@@ -106,6 +121,14 @@ function alpha_beta(state) {
 
 };
 
+//Get Random integer for random board for AI
+function getRandomInt(min, max) {
+    min = Math.floor(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Max Value Checker
 function max_value(state,alpha,beta,is_first) {
 
 	var is_first = is_first || false;
@@ -114,6 +137,7 @@ function max_value(state,alpha,beta,is_first) {
 		return state.get_score();
 	}
 
+	//for implementation minmax method
 	var v = -100000, moves = state.get_moves("max"), min, best_move = moves[0];
 
 	for (var i = 0; i < moves.length; i++) {
@@ -134,6 +158,7 @@ function max_value(state,alpha,beta,is_first) {
 
 };
 
+// Min Value Checker
 function min_value(state,alpha,beta,is_first) {
 
 	var is_first = is_first || false;
@@ -142,6 +167,7 @@ function min_value(state,alpha,beta,is_first) {
 		return state.get_score();
 	}
 
+	//for implementation minmax method
 	var v = 100000, moves = state.get_moves("min"), max, best_move = moves[0];
 
 	for (var i = 0; i < moves.length; i++) {
@@ -162,6 +188,7 @@ function min_value(state,alpha,beta,is_first) {
 
 };
 
+//Copy Board
 function copy_board(board) {
 	var new_board = Array();
 	for (var i = 0; i < board.length; i++) {

@@ -1,3 +1,4 @@
+// display Canvas Board 3x3
 function displayBoard(board,board_div) {
 	var canvas = document.getElementById(board_div);
 	var ctx = canvas.getContext('2d');
