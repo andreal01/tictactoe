@@ -1,6 +1,6 @@
 <html>
 <head>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="assets/jquery-2.min.js"></script>
 <script type="text/javascript" src="gameSystem.js"></script>
 <script type="text/javascript" src="board.js"></script>
 <script type="text/javascript">
@@ -74,6 +74,9 @@ function showWinner(winner) {
 	}
 }
 
+function resetGame() {
+    location.reload();
+}
 
 </script>
 <style type="text/css">
@@ -94,5 +97,6 @@ function showWinner(winner) {
 Your browser doesn't display the canvas tag
 </canvas>
 <h2>X : You | O : Computer</h2>
+<h2><button align="center" onclick="resetGame()">Reset Game</button></h2>
 </body>
 </html>
