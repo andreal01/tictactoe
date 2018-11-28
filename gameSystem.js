@@ -1,3 +1,4 @@
+var stat = 0;
 // main function
 function gameSystem() {
 
@@ -30,8 +31,30 @@ gameSystem.prototype.make_player_move = function(i,j) {
 
 //Ai Mover
 gameSystem.prototype.make_ai_move = function() {
+	console.log('before : '+stat);
 	var best_move = alpha_beta(this);
 	this.board[best_move[0]][best_move[1]] = 'o';
+	if ((this.board[0][2] == 'o' && this.board[1][1] == 'o' && this.board[2][0] == '-' ) || (this.board[0][2] == '-' && this.board[1][1] == 'o' && this.board[2][0] == 'o' ))
+    {
+		stat = 1;
+	} else {
+		stat = 0;
+	}
+	if (this.board[0][0] == 'o' && this.board[1][1] == 'o' && this.board[2][2] == '-')
+	{
+		stat = 2;
+	} 
+	if (this.board[1][0] == 'o' && this.board[1][1] == 'o' && this.board[1][2] == '-')
+	{
+		stat = 3;
+	}
+
+	if (this.board[0][1] == 'o' && this.board[1][1] == 'o' && this.board[2][1] == '-') {
+		stat = 4;
+	}
+	
+	
+	console.log('after : '+stat);
 };
 
 //Ai Mover
@@ -75,15 +98,45 @@ gameSystem.prototype.is_terminal = function() {
 // get score
 gameSystem.prototype.get_score = function() {
 	var lines = new Array(), board = this.board;
-	lines.push(board[0]);
-	lines.push(board[1]);
-	lines.push(board[2]);
-	lines.push([board[0][0],board[1][0],board[2][0]]);
-	lines.push([board[0][1],board[1][1],board[2][1]]);
-	lines.push([board[0][2],board[1][2],board[2][2]]);
-	lines.push([board[0][0],board[1][1],board[2][2]]);
-	lines.push([board[2][0],board[1][1],board[0][2]]);
-
+	
+	if(stat === 1) {
+		lines.push(board[0]);
+		lines.push(board[2]);
+		lines.push([board[0][0],board[1][0],board[2][0]]);
+		lines.push([board[2][0],board[1][1],board[0][2]]);
+	} else if (stat === 2 ){
+		lines.push(board[0]);
+		lines.push(board[1]);
+		lines.push(board[2]);
+		lines.push([board[0][0],board[1][0],board[2][0]]);
+		lines.push([board[0][2],board[1][2],board[2][2]]);
+		lines.push([board[0][0],board[1][1],board[2][2]]);
+		lines.push([board[2][0],board[1][1],board[0][2]]);
+	} else if (stat === 3 ){
+		lines.push(board[0]);
+		lines.push(board[1]);
+		lines.push(board[2]);
+		lines.push([board[0][0],board[1][0],board[2][0]]);
+		lines.push([board[0][2],board[1][2],board[2][2]]);
+		lines.push([board[0][0],board[1][1],board[2][2]]);	
+	} else if (stat === 4 ){
+		lines.push(board[0]);
+		lines.push(board[2]);
+		lines.push([board[0][0],board[1][0],board[2][0]]);
+		lines.push([board[0][1],board[1][1],board[2][1]]);
+		lines.push([board[0][2],board[1][2],board[2][2]]);
+		lines.push([board[0][0],board[1][1],board[2][2]]);
+	} else {
+		lines.push(board[0]);
+		lines.push(board[1]);
+		lines.push(board[2]);
+		lines.push([board[0][0],board[1][0],board[2][0]]);
+		lines.push([board[0][1],board[1][1],board[2][1]]);
+		lines.push([board[0][2],board[1][2],board[2][2]]);
+		lines.push([board[0][0],board[1][1],board[2][2]]);
+		lines.push([board[2][0],board[1][1],board[0][2]]);
+	}
+	
 	for (var i = 0; i < lines.length; i++) {
 		if (lines[i][0] == lines[i][1] &&
 			lines[i][1] == lines[i][2] &&
@@ -116,9 +169,7 @@ gameSystem.prototype.get_next = function(move,player) {
 };
 
 function alpha_beta(state) {
-
-	return min_value(state,-100000,100000,true);
-
+	return min_value(state,-10,10,true);
 };
 
 //Get Random integer for random board for AI
@@ -138,7 +189,7 @@ function max_value(state,alpha,beta,is_first) {
 	}
 
 	//for implementation minmax method
-	var v = -100000, moves = state.get_moves("max"), min, best_move = moves[0];
+	var v = -10, moves = state.get_moves("max"), min, best_move = moves[0];
 
 	for (var i = 0; i < moves.length; i++) {
 		min = min_value(state.get_next(moves[i],"max"),alpha,beta,false);
@@ -168,7 +219,7 @@ function min_value(state,alpha,beta,is_first) {
 	}
 
 	//for implementation minmax method
-	var v = 100000, moves = state.get_moves("min"), max, best_move = moves[0];
+	var v = 10, moves = state.get_moves("min"), max, best_move = moves[0];
 
 	for (var i = 0; i < moves.length; i++) {
 		max = max_value(state.get_next(moves[i],"min"),alpha,beta,false);
